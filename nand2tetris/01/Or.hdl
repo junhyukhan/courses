@@ -1,0 +1,40 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/1/Or.hdl
+/**
+ * Or gate:
+ * if (a or b) out = 1, else out = 0 
+ */
+CHIP Or {
+    IN a, b;
+    OUT out;
+
+    PARTS:
+    //// Replace this comment with your code.
+
+    // Using DeMorgan's Law, we know that
+    // Not(A Or B) == Not(A) and Not(B)
+    // which can be simplified to
+    // A Or B == Not(Not(A) and Not(B))
+
+    // Implementation
+    //Not(in=a, out=nA);
+    //Not(in=b, out=nB);
+    //And(a=nA, b=nB, out=inner);
+    //Not(in=inner, out=out); 
+
+    // We can also simplify the above
+    // so that only the Nand gate is used.
+
+    // Not(Not(x) And Not(y))
+        
+    Nand(a=a, b=a, out=nA);
+    Nand(a=b, b=b, out=nB);
+    
+    Nand(a=nA, b=nB, out=c);
+    Nand(a=c, b=c, out=d);
+
+    Nand(a=d, b=d, out=out);
+
+}
