@@ -8,32 +8,26 @@
  * else if load(t):  out(t+1) = in(t)
  * else if inc(t):   out(t+1) = out(t) + 1
  * else              out(t+1) = out(t)
- 
+*/
 
- * out = a if sel = 000
- *       b if sel = 001
- *       c if sel = 010
- *       d if sel = 011
- *       e if sel = 100
- *       f if sel = 101
- *       g if sel = 110
- *       h if sel = 111
- */
 CHIP PC {
     IN in[16], reset, load, inc;
     OUT out[16];
     
     PARTS:
     //// Replace this comment with your code.
-	Register(in=outall, load=c, out=out, out=outnext);
+	// register should have two out pins
+	// the outnext goes into the in of the next time step.
+	Register(in=outMux, load=loadall, out=out, out=outnext);
 	Inc16(in=outnext, out=outinc);
 	
 	Mux16(a=outnext, b=outinc, sel=inc, out=aa);
 	Mux16(a=aa, b=in, sel=load, out=bb);
-	Mux16(a=bb, b=false, sel=reset, out=outall);
+	Mux16(a=bb, b=false, sel=reset, out=outMux);
 
-	Mux(a=false, b=inc, sel=inc, out=a);
-	Mux(a=a, b=load, sel=load, out=b);
-	Mux(a=b, b=reset, sel=reset, out=c);
+	// My initial thought was that the load for the register should be Muxed.
+	// But Or works as the Mux above already is selected based on the load values.
+	Or(a=reset, b=load, out=loadtemp);
+	Or(a=loadtemp, b=inc, out=loadall);
 	
 }
